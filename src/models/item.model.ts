@@ -1,13 +1,14 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {ItemListWithRelations, ItemList} from './item-list.model';
 
 @model()
 export class Item extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: false,
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'string',
@@ -18,9 +19,12 @@ export class Item extends Entity {
   @property({
     type: 'boolean',
     required: false,
-    default: true,
+    default: false,
   })
-  active?: boolean;
+  isComplete?: boolean;
+
+  @belongsTo(() => ItemList)
+  itemListId: string;
 
   constructor(data?: Partial<Item>) {
     super(data);
@@ -28,7 +32,7 @@ export class Item extends Entity {
 }
 
 export interface ItemRelations {
-  // describe navigational properties here
+  itemList?: ItemListWithRelations;
 }
 
 export type ItemWithRelations = Item & ItemRelations;

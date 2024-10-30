@@ -7,24 +7,42 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {Item} from '../models';
+import {Item, ItemList} from '../models';
 import {ItemRepository} from '../repositories';
 
 export class ItemController {
   constructor(
     @repository(ItemRepository)
-    public itemRepository : ItemRepository,
+    public itemRepository: ItemRepository,
   ) {}
+
+  @get('/items/{id}/item-list', {
+    responses: {
+      '200': {
+        description: 'ItemList belonging to Item',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(ItemList),
+          },
+        },
+      },
+    },
+  })
+  async getItemList(
+    @param.path.string('id') id: typeof Item.prototype.id,
+  ): Promise<ItemList> {
+    return this.itemRepository.itemList(id);
+  }
 
   @post('/items')
   @response(200, {
@@ -52,9 +70,7 @@ export class ItemController {
     description: 'Item model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Item) where?: Where<Item>,
-  ): Promise<Count> {
+  async count(@param.where(Item) where?: Where<Item>): Promise<Count> {
     return this.itemRepository.count(where);
   }
 
@@ -70,9 +86,7 @@ export class ItemController {
       },
     },
   })
-  async find(
-    @param.filter(Item) filter?: Filter<Item>,
-  ): Promise<Item[]> {
+  async find(@param.filter(Item) filter?: Filter<Item>): Promise<Item[]> {
     return this.itemRepository.find(filter);
   }
 
@@ -105,8 +119,8 @@ export class ItemController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Item, {exclude: 'where'}) filter?: FilterExcludingWhere<Item>
+    @param.path.string('id') id: string,
+    @param.filter(Item, {exclude: 'where'}) filter?: FilterExcludingWhere<Item>,
   ): Promise<Item> {
     return this.itemRepository.findById(id, filter);
   }
@@ -116,7 +130,7 @@ export class ItemController {
     description: 'Item PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -134,7 +148,7 @@ export class ItemController {
     description: 'Item PUT success',
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody() item: Item,
   ): Promise<void> {
     await this.itemRepository.replaceById(id, item);
@@ -144,7 +158,7 @@ export class ItemController {
   @response(204, {
     description: 'Item DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.itemRepository.deleteById(id);
   }
 }
