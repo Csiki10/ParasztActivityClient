@@ -2,7 +2,7 @@ import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {Game, GameWithRelations} from './game.model';
 
 @model()
-export class Round extends Entity {
+export class Team extends Entity {
   @property({
     type: 'string',
     id: true,
@@ -12,27 +12,26 @@ export class Round extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
-  type: string;
+  name?: string;
 
   @property({
     type: 'number',
     required: false,
-    default: 45,
+    default: 0,
   })
-  time: number;
+  point?: number;
 
   @belongsTo(() => Game)
   gameId: string;
 
-  constructor(data?: Partial<Round>) {
+  constructor(data?: Partial<Team>) {
     super(data);
   }
 }
 
-export interface RoundRelations {
+export interface TeamRelations {
   game?: GameWithRelations;
 }
 
-export type RoundWithRelations = Round & RoundRelations;
+export type TeamWithRelations = Team & TeamRelations;
