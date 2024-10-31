@@ -1,21 +1,21 @@
 import {inject, Getter} from '@loopback/core';
 import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
 import {MongoDataSource} from '../datasources';
-import {Team, TeamRelations, Game} from '../models';
+import {Round, RoundRelations, Game} from '../models';
 import {GameRepository} from './game.repository';
 
-export class TeamRepository extends DefaultCrudRepository<
-  Team,
-  typeof Team.prototype.id,
-  TeamRelations
+export class RoundRepository extends DefaultCrudRepository<
+  Round,
+  typeof Round.prototype.id,
+  RoundRelations
 > {
 
-  public readonly game: BelongsToAccessor<Game, typeof Team.prototype.id>;
+  public readonly game: BelongsToAccessor<Game, typeof Round.prototype.id>;
 
   constructor(
     @inject('datasources.mongo') dataSource: MongoDataSource, @repository.getter('GameRepository') protected gameRepositoryGetter: Getter<GameRepository>,
   ) {
-    super(Team, dataSource);
+    super(Round, dataSource);
     this.game = this.createBelongsToAccessorFor('game', gameRepositoryGetter,);
     this.registerInclusionResolver('game', this.game.inclusionResolver);
   }

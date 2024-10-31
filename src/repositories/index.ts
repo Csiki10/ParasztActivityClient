@@ -1,4 +1,5 @@
+export * from './game-item.repository';
+export * from './game.repository';
 export * from './item.repository';
-export * from './item-list.repository';
+export * from './round.repository';
 export * from './team.repository';
-export * from './round-type.repository';

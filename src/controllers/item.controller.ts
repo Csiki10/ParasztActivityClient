@@ -7,42 +7,24 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  del,
+  post,
+  param,
   get,
   getModelSchemaRef,
-  param,
   patch,
-  post,
   put,
+  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {Item, ItemList} from '../models';
+import {Item} from '../models';
 import {ItemRepository} from '../repositories';
 
 export class ItemController {
   constructor(
     @repository(ItemRepository)
-    public itemRepository: ItemRepository,
+    public itemRepository : ItemRepository,
   ) {}
-
-  @get('/items/{id}/item-list', {
-    responses: {
-      '200': {
-        description: 'ItemList belonging to Item',
-        content: {
-          'application/json': {
-            schema: getModelSchemaRef(ItemList),
-          },
-        },
-      },
-    },
-  })
-  async getItemList(
-    @param.path.string('id') id: typeof Item.prototype.id,
-  ): Promise<ItemList> {
-    return this.itemRepository.itemList(id);
-  }
 
   @post('/items')
   @response(200, {
@@ -70,7 +52,9 @@ export class ItemController {
     description: 'Item model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(@param.where(Item) where?: Where<Item>): Promise<Count> {
+  async count(
+    @param.where(Item) where?: Where<Item>,
+  ): Promise<Count> {
     return this.itemRepository.count(where);
   }
 
@@ -86,7 +70,9 @@ export class ItemController {
       },
     },
   })
-  async find(@param.filter(Item) filter?: Filter<Item>): Promise<Item[]> {
+  async find(
+    @param.filter(Item) filter?: Filter<Item>,
+  ): Promise<Item[]> {
     return this.itemRepository.find(filter);
   }
 
@@ -120,7 +106,7 @@ export class ItemController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Item, {exclude: 'where'}) filter?: FilterExcludingWhere<Item>,
+    @param.filter(Item, {exclude: 'where'}) filter?: FilterExcludingWhere<Item>
   ): Promise<Item> {
     return this.itemRepository.findById(id, filter);
   }

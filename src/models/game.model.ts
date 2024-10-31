@@ -1,4 +1,7 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
+import {GameItem, GameItemWithRelations} from './game-item.model';
+import {Round, RoundWithRelations} from './round.model';
+import {Team, TeamWithRelations} from './team.model';
 
 @model()
 export class Game extends Entity {
@@ -9,17 +12,14 @@ export class Game extends Entity {
   })
   id?: string;
 
-  @property({
-    type: 'date',
-    required: true,
-  })
-  time: string; // todo ez round modelba
-  @property({
-    type: 'number',
-    required: true,
-  })
-  roundCount: number; // todo ez round modelba / newm kell
-  // repo & controller refact
+  @hasMany(() => Team)
+  teams: Team[];
+
+  @hasMany(() => Round)
+  rounds: Round[];
+
+  @hasMany(() => GameItem)
+  gameItems: GameItem[];
 
   constructor(data?: Partial<Game>) {
     super(data);
@@ -27,7 +27,9 @@ export class Game extends Entity {
 }
 
 export interface GameRelations {
-  // describe navigational properties here
+  teams?: TeamWithRelations[];
+  rounds?: RoundWithRelations[];
+  gameItems?: GameItemWithRelations[];
 }
 
 export type GameWithRelations = Game & GameRelations;

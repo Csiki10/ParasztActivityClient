@@ -1,5 +1,5 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
-import {ItemListWithRelations, ItemList} from './item-list.model';
+import {Entity, hasMany, model, property} from '@loopback/repository';
+import {GameItem, GameItemWithRelations} from './game-item.model';
 
 @model()
 export class Item extends Entity {
@@ -16,15 +16,8 @@ export class Item extends Entity {
   })
   name: string;
 
-  @property({
-    type: 'boolean',
-    required: false,
-    default: false,
-  })
-  isComplete?: boolean;
-
-  @belongsTo(() => ItemList)
-  itemListId: string;
+  @hasMany(() => GameItem)
+  gameItems: GameItem[];
 
   constructor(data?: Partial<Item>) {
     super(data);
@@ -32,7 +25,7 @@ export class Item extends Entity {
 }
 
 export interface ItemRelations {
-  itemList?: ItemListWithRelations;
+  gameItems?: GameItemWithRelations[];
 }
 
 export type ItemWithRelations = Item & ItemRelations;
