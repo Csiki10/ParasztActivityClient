@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Item } from '../../../../shared/types/items';
 
 @Component({
   selector: 'item-list',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
   templateUrl: './item-list.component.html',
   styleUrl: './item-list.component.scss',
 })
-export class ItemListComponent {}
+export class ItemListComponent {
+  @Input() items = Array<string>();
+}

@@ -1,8 +1,10 @@
-<main class="mx-auto md:w-1/2 p-4 flex flex-col gap-4">
-  <add-item></add-item>
-  <item-list class="flex-1"></item-list>
+<main class="mx-auto sm:w-1/2 p-4 flex flex-col gap-4">
+  <add-item (onAddItem)="handleAddItem($event)"></add-item>
+  <item-list [items]="items" class="flex-1"></item-list>
   <div>
-    <p class="text-center">Total words: 3</p>
+    <p class="text-center">
+      Total words: <span class="font-medium">{{ items.length }}</span>
+    </p>
   </div>
   <primary-button [text]="'Start Game'" class="text-center"></primary-button>
 </main>

@@ -1,7 +1,11 @@
-<div class="flex flex-1 border-2 shadow-lg p-2 rounded-md">
+<div class="flex border-2 shadow-lg p-2 rounded-md">
+  @if (items.length > 0) {
   <ul>
-    <li>Test 1</li>
-    <li>Test 1</li>
-    <li>Test 1</li>
+    @for (item of items; track item) {
+    <li>{{ item }}</li>
+    }
   </ul>
+  } @else {
+  <p class="text-gray-400">No words yet</p>
+  }
 </div>
