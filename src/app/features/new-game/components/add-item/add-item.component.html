@@ -1,17 +1,29 @@
-<div class="flex gap-2">
-  <div class="flex flex-1 rounded-md shadow-md ring-1 ring-inset ring-gray-300">
+<div class="flex flex-col gap-2">
+  <div class="flex gap-2">
     <input
+      #word
       type="text"
       name="game-item"
       id="game-item"
       autocomplete="game-item"
-      class="ps-2 block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0"
+      class="rounded-md shadow-md ring-1 ring-inset ring-gray-300 p-2 block flex-1 border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0"
       placeholder="Your word"
       [formControl]="item"
     />
+    <primary-button
+      [text]="'Add word'"
+      [disabled]="!item.valid"
+      [class.disabled]="!item.valid"
+      (click)="addItem()"
+    ></primary-button>
   </div>
-  <primary-button
-    [text]="'Add word'"
-    [disabled]="isDisabled()"
-  ></primary-button>
+  <div
+    *ngIf="item.invalid && (item.dirty || item.touched)"
+    class="text-red-500 px-2"
+  >
+    <div *ngIf="item.hasError('required')">Word is required.</div>
+    <div *ngIf="item.hasError('minlength')">
+      Word must be at least 2 characters long.
+    </div>
+  </div>
 </div>

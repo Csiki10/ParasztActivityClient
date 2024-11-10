@@ -1,27 +1,37 @@
-import { Component, EventEmitter, output, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  output,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { PrimaryButtonComponent } from '../../../../shared/components/primary-button/primary-button.component';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'add-item',
   standalone: true,
-  imports: [PrimaryButtonComponent, ReactiveFormsModule],
+  imports: [
+    PrimaryButtonComponent,
+    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+  ],
   templateUrl: './add-item.component.html',
   styleUrl: './add-item.component.scss',
 })
 export class AddItemComponent {
-  item = new FormControl('');
+  @ViewChild('word') itemElement: ElementRef | undefined;
+
+  item = new FormControl('', [Validators.required, Validators.minLength(2)]);
   onAddItem = output<string>();
 
-  addItem(word: string): void {
-    if (word.trim() !== '') {
-      this.item.setValue(word.trim());
-    }
-    this.onAddItem.emit(this.item.value ?? '');
-  }
-
-  isDisabled() {
-    // todo not works
-    return !this.item.value;
+  addItem() {
+    this.onAddItem.emit(this.item.value!);
+    this.item.reset();
+    this.itemElement?.nativeElement.focus();
   }
 }

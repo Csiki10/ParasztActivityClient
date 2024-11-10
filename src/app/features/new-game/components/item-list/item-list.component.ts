@@ -9,5 +9,5 @@ import { Item } from '../../../../shared/types/items';
   styleUrl: './item-list.component.scss',
 })
 export class ItemListComponent {
-  @Input() items = Array<string>();
+  @Input() items = Array<Item>();
 }

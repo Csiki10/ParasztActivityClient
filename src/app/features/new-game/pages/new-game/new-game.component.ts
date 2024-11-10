@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { AddItemComponent } from '../../components/add-item/add-item.component';
 import { ItemListComponent } from '../../components/item-list/item-list.component';
 import { PrimaryButtonComponent } from '../../../../shared/components/primary-button/primary-button.component';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GameService } from '../../services/game/game.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Item } from '../../../../shared/types/items';
+import { Game } from '../../../../shared/types/game';
 
 @Component({
   selector: 'new-game',
@@ -14,18 +15,15 @@ import { BehaviorSubject } from 'rxjs';
   styleUrl: './new-game.component.scss',
 })
 export class NewGameComponent {
-  items: Array<string> = [];
-  game$: BehaviorSubject<string> = new BehaviorSubject('');
+  private nextItemId = 0;
+  items: Array<Item> = [];
+  game: Game | undefined;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private gameService: GameService,
-    private router: Router
-  ) {}
+  constructor(private gameService: GameService) {}
 
   ngOnInit(): void {
-    const id = this.activatedRoute.snapshot.params['gameId'];
-    id ? this.loadGame(id) : this.createNewGame();
+    const gameId = localStorage.getItem('gameId');
+    gameId ? this.loadGame(gameId) : this.createNewGame();
   }
 
   createNewGame(): void {
@@ -37,13 +35,8 @@ export class NewGameComponent {
         }
 
         console.log('New game created:', game);
-        this.game$.next(game.id);
-        const queryParams: Params = { gameId: game.id };
-
-        this.router.navigate([], {
-          relativeTo: this.activatedRoute,
-          queryParams,
-        });
+        this.game = game;
+        localStorage.setItem('gameId', game.id);
       },
       (error) => {
         console.error('Error creating game:', error);
@@ -60,7 +53,7 @@ export class NewGameComponent {
         }
 
         console.log('Game loaded:', game);
-        this.game$.next(game.id ?? '');
+        this.game = game;
       },
       (error) => {
         console.error('Error loading game:', error);
@@ -68,7 +61,7 @@ export class NewGameComponent {
     );
   }
 
-  handleAddItem(item: string) {
-    this.items.push(item);
+  handleAddItem(name: string) {
+    this.items.push({ id: ++this.nextItemId, name: name });
   }
 }
